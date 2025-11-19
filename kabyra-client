@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kabyra Client - Магазин модов для Minecraft</title>
+    <style>
+        :root {
+            --primary: #8a2be2;
+            --primary-dark: #6a1cb0;
+            --accent: #ff00ff;
+            --dark: #121212;
+            --light: #f5f5f5;
+            --gray: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--light);
+            text-shadow: 0 0 10px var(--accent);
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--primary);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: #ccc;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6);
+        }
+        
+        /* Products Section */
+        .products {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: var(--light);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            margin: 15px auto;
+            border-radius: 2px;
+        }.products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-card {
+            background: var(--gray);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.3);
+        }
+        
+        .product-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .product-header h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .product-price {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .product-body {
+            padding: 25px;
+        }
+        
+        .product-body ul {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+        
+        .product-body ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .product-body ul li:last-child {
+            border-bottom: none;
+        }
+        
+        .product-body ul li::before {
+            content: '✓';
+            color: var(--accent);
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        /* Contacts Section */
+        .contacts {
+            padding: 80px 0;
+            background: var(--gray);
+            text-align: center;
+        }
+        
+        .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            background: #0088cc;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .telegram-link:hover {
+            transform: scale(1.05);
+        }
+        
+        .telegram-link img {
+            width: 24px;
+            margin-right: 10px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            padding: 40px 0;
+            background: var(--dark);
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--gray);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 10px 0;
+        }
+        
+        .transactions {
+            background: var(--gray);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .transaction-item:last-child {border-bottom: none;
+        }
+        
+        .withdrawal-form {
+            background: var(--gray);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+        
+        /* Payment Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--gray);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-method {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .payment-method.active {
+            background: var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Kabyra<span>Client</span></div>
+                <nav>
+                    <ul>
+                        <li><a href="#products">Товары</a></li>
+                        <li><a href="#contacts">Контакты</a></li>
+                        <li><a href="#" id="admin-link">Админ-панель</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Лучшие моды для Minecraft</h1>
+            <p>Улучшите свой игровой опыт с Kabyra Client. Мощные функции, простота использования и постоянные обновления.</p>
+            <a href="#products" class="btn">Купить сейчас</a>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title">Наши продукты</h2>
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card"><div class="product-header">
+                        <h3>Клиент навсегда</h3>
+                        <div class="product-price">150₽</div>
+                    </div>
+                    <div class="product-body">
+                        <ul>
+                            <li>Полный доступ навсегда</li>
+                            <li>Все будущие обновления</li>
+                            <li>Приоритетная поддержка</li>
+                            <li>Доступ ко всем функциям</li>
+                        </ul>
+                        <button class="btn buy-btn" data-product="Клиент навсегда" data-price="150">Купить</button>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="product-header">
+                        <h3>Клиент на 30 дней</h3>
+                        <div class="product-price">100₽</div>
+                    </div>
+                    <div class="product-body">
+                        <ul>
+                            <li>Доступ на 30 дней</li>
+                            <li>Все текущие функции</li>
+                            <li>Стандартная поддержка</li>
+                            <li>Автоматическое обновление</li>
+                        </ul>
+                        <button class="btn buy-btn" data-product="Клиент на 30 дней" data-price="100">Купить</button>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="product-header">
+                        <h3>Сброс HWID</h3>
+                        <div class="product-price">75₽</div>
+                    </div>
+                    <div class="product-body">
+                        <ul>
+                            <li>Сброс аппаратного ID</li>
+                            <li>Возможность установки на другое устройство</li>
+                            <li>Быстрое выполнение</li>
+                            <li>Поддержка 24/7</li>
+                        </ul>
+                        <button class="btn buy-btn" data-product="Сброс HWID" data-price="75">Купить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacts Section -->
+    <section class="contacts" id="contacts">
+        <div class="container">
+            <h2 class="section-title">Свяжитесь с нами</h2>
+            <p>По всем вопросам обращайтесь в наш Telegram-канал</p>
+            <a href="https://t.me/KabyraDLC" class="telegram-link" target="_blank">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAwQzUuMzczIDAgMCA1LjM3MyAwIDEyYzAgNi42MjcgNS4zNzMgMTIgMTIgMTJzMTItNS4zNzMgMTItMTJDMjQgNS4zNzMgMTguNjI3IDAgMTIgMHptNS44OTQgOC4yMWwtMS45NyA5LjI4M2MtLjE0Mi42NjUtLjUzOC44MTgtLjg3NS44MTgtLjMzNiAwLS42MjQtLjE5OC0xLjM3OC0uNTk1bC00LTQuMTY5Yy0uNTY1LS40OTQtLjY3Mi0uNzA3LS43MjUtMS4xNzktLjA1My0uNDcyLjI3NC0uNjk1LjY4LS42OTVoMy4zNjljLjUzMiAwIC43MzktLjI0My45MjUtLjY0M2wyLjA0Ni00LjU3MmMuMTk4LS40NDIuMDM3LS44MDItLjQ3NC0uODAyaC0zLjQ0Yy0uNDA2IDAtLjY0OC4xMDYtLjgzLjM1LS4xODMuMjQzLS43MDYuNzYzLS43MDYuNzYzcy0yLjg4IDIuNzUtMy4xNDUgMi45MzNjLS4yNjYuMTgzLS41MzIuMjY2LS43OTguMjY2LS4yNjYgMC0uNjM5LS4wOTUtLjk1My0uMzQ1LS4zMTQtLjI1LS42MjUtLjcyMy0uODM4LTEuMTc5QzMuNTQzIDkuNDYgMy4wMzcgOC4wMyAzLjAzNyA4LjAzcy0uOTUzLTIuMTktMS4xNy0yLjY2Yy0uMjE3LS40Ny0uNDM0LS40MDctLjQzNC0uNDA3LjA1My0uMDUzLjE0Mi0uMDkuMjIzLS4xMjUuMDgtLjAzNS4xNi0uMDYyLjI0LS4wODguMDgtLjAyNi4xNi0uMDQ1LjI0LS4wNjQuMDgtLjAxOC4xNi0uMDMyLjI0LS4wNC4wOC0uMDEuMTYtLjAxNS4yNC0uMDI1LjA4LS4wMDcuMTYtLjAwNy4yNC0uMDA3aDQuODg4Yy42MzggMCAuODU0LjI2NiAxLjA0LjYzOGwxLjY3IDMuNTY1IDEuMDctMi4xMzJjLjI2Ni0uNTMyLjUzMi0uNzE1IDEuMDctLjcxNWg0LjQ0NGMuNTMyIDAgLjY5LjI2Ni41OTcuNzk3eiIvPjwvc3ZnPg==" alt="Telegram">
+                @KabyraDLC
+            </a>
+        </div>
+    </section><!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Kabyra Client. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Оплата товара</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p>Товар: <span id="modal-product-name"></span></p>
+            <p>Цена: <span id="modal-product-price"></span>₽</p>
+            
+            <div class="form-group">
+                <label>Выберите способ оплаты:</label>
+                <div class="payment-methods">
+                    <div class="payment-method active" data-method="card">Карта</div>
+                    <div class="payment-method" data-method="qiwi">QIWI</div>
+                    <div class="payment-method" data-method="yoomoney">ЮMoney</div>
+                </div>
+            </div>
+            
+            <div id="card-payment">
+                <div class="form-group">
+                    <label>Номер карты:</label>
+                    <input type="text" placeholder="0000 0000 0000 0000">
+                </div>
+                <div class="form-group">
+                    <label>Срок действия:</label>
+                    <input type="text" placeholder="ММ/ГГ">
+                </div>
+                <div class="form-group">
+                    <label>CVV:</label>
+                    <input type="text" placeholder="000">
+                </div>
+            </div>
+            
+            <div id="other-payment" style="display: none;">
+                <p>После нажатия "Оплатить", вы будете перенаправлены на страницу оплаты выбранного способа.</p>
+            </div>
+            
+            <button class="btn" id="confirm-payment">Оплатить</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <section class="admin-panel" id="admin-panel">
+        <div class="container">
+            <div class="admin-header">
+                <h2>Админ-панель</h2>
+                <button class="btn" id="logout-admin">Выйти</button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Общий доход</h3>
+                    <div class="stat-value">325₽</div>
+                    <p>За все время</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Доступно для вывода</h3>
+                    <div class="stat-value">275₽</div>
+                    <p>На балансе</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Продажи за месяц</h3>
+                    <div class="stat-value">3</div>
+                    <p>Транзакции</p>
+                </div>
+            </div>
+            
+            <div class="transactions">
+                <h3>Последние транзакции</h3>
+                <div class="transaction-item">
+                    <div>Клиент навсегда</div>
+                    <div>150₽</div>
+                    <div>15.10.2023</div>
+                </div>
+                <div class="transaction-item">
+                    <div>Сброс HWID</div>
+                    <div>75₽</div>
+                    <div>12.10.2023</div>
+                </div>
+                <div class="transaction-item">
+                    <div>Клиент на 30 дней</div>
+                    <div>100₽</div>
+                    <div>10.10.2023</div>
+                </div>
+            </div>
+            
+            <div class="withdrawal-form">
+                <h3>Вывод средств</h3>
+                <div class="form-group">
+                    <label>Сумма для вывода:</label>
+                    <input type="number" id="withdrawal-amount" placeholder="Введите сумму"></div>
+                <div class="form-group">
+                    <label>Способ вывода:</label>
+                    <select id="withdrawal-method">
+                        <option value="card">Банковская карта</option>
+                        <option value="qiwi">QIWI кошелек</option>
+                        <option value="yoomoney">ЮMoney</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Реквизиты:</label>
+                    <input type="text" id="withdrawal-details" placeholder="Номер карты/кошелька">
+                </div>
+                <button class="btn" id="withdrawal-btn">Вывести</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Payment Modal Logic
+        const buyButtons = document.querySelectorAll('.buy-btn');
+        const paymentModal = document.getElementById('payment-modal');
+        const closeModal = document.querySelector('.close-modal');
+        const modalProductName = document.getElementById('modal-product-name');
+        const modalProductPrice = document.getElementById('modal-product-price');
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        const cardPayment = document.getElementById('card-payment');
+        const otherPayment = document.getElementById('other-payment');
+        const confirmPayment = document.getElementById('confirm-payment');
+        
+        // Admin Panel Logic
+        const adminLink = document.getElementById('admin-link');
+        const adminPanel = document.getElementById('admin-panel');
+        const logoutAdmin = document.getElementById('logout-admin');
+        const withdrawalBtn = document.getElementById('withdrawal-btn');
+        
+        // Open payment modal
+        buyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const product = this.getAttribute('data-product');
+                const price = this.getAttribute('data-price');
+                
+                modalProductName.textContent = product;
+                modalProductPrice.textContent = price;
+                
+                paymentModal.style.display = 'flex';
+            });
+        });
+        
+        // Close payment modal
+        closeModal.addEventListener('click', function() {
+            paymentModal.style.display = 'none';
+        });
+        
+        // Payment method selection
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', function() {
+                paymentMethods.forEach(m => m.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (this.getAttribute('data-method') === 'card') {
+                    cardPayment.style.display = 'block';
+                    otherPayment.style.display = 'none';
+                } else {
+                    cardPayment.style.display = 'none';
+                    otherPayment.style.display = 'block';
+                }
+            });
+        });
+        
+        // Confirm payment
+        confirmPayment.addEventListener('click', function() {
+            alert('Оплата прошла успешно! Свяжитесь с нами в Telegram для получения товара.');
+            paymentModal.style.display = 'none';
+        });
+        
+        // Admin panel toggle
+        adminLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('header').style.display = 'none';
+            document.querySelector('.hero').style.display = 'none';
+            document.querySelector('.products').style.display = 'none';
+            document.querySelector('.contacts').style.display = 'none';
+            document.querySelector('footer').style.display = 'none';adminPanel.style.display = 'block';
+        });
+        
+        // Logout from admin panel
+        logoutAdmin.addEventListener('click', function() {
+            adminPanel.style.display = 'none';
+            document.querySelector('header').style.display = 'block';
+            document.querySelector('.hero').style.display = 'block';
+            document.querySelector('.products').style.display = 'block';
+            document.querySelector('.contacts').style.display = 'block';
+            document.querySelector('footer').style.display = 'block';
+        });
+        
+        // Withdrawal request
+        withdrawalBtn.addEventListener('click', function() {
+            const amount = document.getElementById('withdrawal-amount').value;
+            const method = document.getElementById('withdrawal-method').value;
+            const details = document.getElementById('withdrawal-details').value;
+            
+            if (amount && details) {
+                alert(Запрос на вывод ${amount}₽ через ${method} отправлен!);
+                document.getElementById('withdrawal-amount').value = '';
+                document.getElementById('withdrawal-details').value = '';
+            } else {
+                alert('Заполните все поля!');
+            }
+        });
+    </script>
+</body>
+</html>

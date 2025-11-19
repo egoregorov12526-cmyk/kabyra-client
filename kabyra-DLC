@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Kabyra Client - Магазин</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="logo">Kabyra Client</div>
+      <nav class="nav">
+        <a href="#tariffs">Тарифы</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="hero" class="hero">
+        <h1>Kabyra Client</h1>
+        <p>Продвинутый клиент для Minecraft с приватными модами.</p>
+        <a href="#tariffs" class="btn-primary">Выбрать тариф</a>
+      </section>
+
+      <section id="tariffs" class="section">
+        <h2>Тарифы</h2>
+        <div class="cards">
+          <div class="card" data-product="lifetime">
+            <h3>Клиент навсегда</h3>
+            <p class="price">150 ₽</p>
+            <p>Доступ к клиенту без ограничения по времени.</p>
+            <a class="btn-outline" href="https://t.me/KabyraDLC?text=%D0%A5%D0%BE%D1%87%D1%83%20%D0%BA%D1%83%D0%BF%D0%B8%D1%82%D1%8C%20Kabyra%20Client%20%D0%BD%D0%B0%D0%B2%D1%81%D0%B5%D0%B3%D0%B4%D0%B0%20-%20150%D1%80" target="_blank">Купить</a>
+          </div>
+          <div class="card" data-product="30d">
+            <h3>Клиент 30 дней</h3>
+            <p class="price">100 ₽</p>
+            <p>Полный функционал клиента на 30 дней.</p>
+            <a class="btn-outline" href="https://t.me/KabyraDLC?text=%D0%A5%D0%BE%D1%87%D1%83%20%D0%BA%D1%83%D0%BF%D0%B8%D1%82%D1%8C%20Kabyra%20Client%2030%D0%B4%20-%20100%D1%80" target="_blank">Купить</a>
+          </div>
+          <div class="card" data-product="hwid_reset">
+            <h3>Сброс HWID</h3>
+            <p class="price">75 ₽</p>
+            <p>Сброс привязки HWID к новому ПК.</p>
+            <a class="btn-outline" href="https://t.me/KabyraDLC?text=%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%B1%D1%80%D0%BE%D1%81%20HWID%20-%2075%D1%80" target="_blank">Купить</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="contacts" class="section">
+        <h2>Контакты</h2>
+        <p>По всем вопросам и после оплаты пишите в Telegram:</p>
+        <p><a class="link" href="https://t.me/KabyraDLC" target="_blank">@KabyraDLC</a></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>© Kabyra Client</span>
+      <a href="/admin.html">Админ-панель</a>
+    </footer>
+  </div><!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Kabyra Client - Админка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="logo">Kabyra Admin</div>
+    </header>
+
+    <main class="section">
+      <h1>Админ-панель</h1>
+      <div id="login-block" class="card">
+        <h2>Вход</h2>
+        <label>
+          Админ-токен
+          <input type="password" id="admin-token" placeholder="Вставьте токен">
+        </label>
+        <button id="login-btn" class="btn-primary">Войти</button>
+        <p id="login-message" class="message"></p>
+      </div>
+
+      <div id="admin-content" style="display:none;">
+        <section class="card">
+          <h2>Баланс</h2>
+          <p>Сумма оплаченных заказов: <span id="balance">0</span> ₽</p>
+          <p class="hint">Вывод средств делается через личный кабинет платёжной системы (ЮKassa и т.п.).</p>
+        </section>
+
+        <section class="card">
+          <h2>Заказы</h2>
+          <button id="refresh-btn" class="btn-outline">Обновить</button>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Ник</th>
+                <th>Контакт</th>
+                <th>Тариф</th>
+                <th>Цена</th>
+                <th>Статус</th>
+                <th>Создан</th>
+              </tr>
+            </thead>
+            <tbody id="orders-body"></tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let token = '';
+
+    const loginBlock = document.getElementById('login-block');
+    const adminContent = document.getElementById('admin-content');
+    const loginMsg = document.getElementById('login-message');
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+      token = document.getElementById('admin-token').value.trim();
+      if (!token) {
+        loginMsg.textContent = 'Введите токен.';
+        loginMsg.classList.add('error');
+        return;
+      }
+      loadData();
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', loadData);
+
+    async function loadData() {
+      loginMsg.textContent = '';
+      try {
+        const [balanceRes, ordersRes] = await Promise.all([
+          fetch('/api/admin/balance', { headers: { 'x-admin-token': token } }),
+          fetch('/api/admin/orders', { headers: { 'x-admin-token': token } })
+        ]);
+
+        if (!balanceRes.ok || !ordersRes.ok) {
+          throw new Error('Неверный токен или ошибка сервера');
+        }
+
+        const balanceJson = await balanceRes.json();
+        const ordersJson = await ordersRes.json();
+
+        adminContent.style.display = 'block';
+        loginBlock.style.display = 'none';
+
+        document.getElementById('balance').textContent = balanceJson.balance;
+
+        const tbody = document.getElementById('orders-body');
+        tbody.innerHTML = '';
+        ordersJson.orders.forEach(o => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${o.id}</td>
+            <td>${o.username}</td>
+            <td>${o.contact}</td>
+            <td>${o.productName}</td>
+            <td>${o.amount} ₽</td>
+            <td>${o.status}</td>
+            <td>${new Date(o.createdAt).toLocaleString('ru-RU')}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        loginMsg.classList.add('error');
+        loginMsg.textContent = err.message;
+      }
+    }
+  </script>
+</body>
+</html>
+
+</body>
+</html>
